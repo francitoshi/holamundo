@@ -6,10 +6,17 @@ plugins {
 group = 'com.ejemplo'
 version = '1.0.0'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+// Gradle 9+: sourceCompatibility/targetCompatibility se eliminaron,
+// ahora van dentro del bloque java {}
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
-mainClassName = 'com.ejemplo.holamundo.Main'
+application {
+    // mainClassName también fue eliminado en Gradle 9, ahora es mainClass
+    mainClass = 'com.ejemplo.holamundo.Main'
+}
 
 repositories {
     mavenCentral()
@@ -19,7 +26,7 @@ dependencies {
     // Sin dependencias externas — aplicación mínima
 }
 
-// Crea un JAR ejecutable con el Manifest correcto
+// JAR ejecutable con Manifest correcto
 jar {
     manifest {
         attributes(
