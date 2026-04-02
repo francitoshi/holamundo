@@ -87,29 +87,18 @@ jobs:
           chmod +x build/installers/linux/instalar-holamundo.sh
 
       - name: Crear paquete Snap (Ubuntu Snap Store)
+        # snapcraft no está disponible via apt en GitHub Actions runners.
+        # La action oficial de Snapcore instala snapcraft correctamente
+        # y construye el .snap usando el fichero snap/snapcraft.yaml del repo.
+        uses: snapcore/action-build@v1
+        id: snap-build
+        continue-on-error: true   # Si falla, el resto del build continúa igualmente
+
+      - name: Mover .snap a la carpeta de instaladores
+        if: steps.snap-build.outcome == 'success'
         run: |
-          # snapcraft es el CLI oficial para construir snaps
-          sudo apt-get install -y snapcraft
-          mkdir -p snap
-          cat > snap/snapcraft.yaml << 'EOF'
-          name: holamundo
-          version: '1.0.0'
-          summary: Hola Mundo en Java
-          description: Aplicación de ejemplo Hola Mundo escrita en Java 17
-          grade: stable
-          confinement: strict
-          base: core22
-          parts:
-            holamundo:
-              plugin: dump
-              source: build/libs
-              stage-packages:
-                - openjdk-17-jre
-          apps:
-            holamundo:
-              command: java -jar holamundo-1.0.0.jar
-          EOF
-          snapcraft --destructive-mode || echo "⚠️ Snap requiere entorno especial; ver docs"
+          mkdir -p build/installers/linux
+          mv *.snap build/installers/linux/ 2>/dev/null || true
 
       # Sube todos los instaladores como artefactos del workflow
       # Los encontrarás en la pestaña Actions → tu ejecución → Artifacts

@@ -1,0 +1,21 @@
+name: holamundo
+version: '1.0.0'
+summary: Hola Mundo en Java
+description: Aplicación de ejemplo Hola Mundo escrita en Java 17
+
+grade: stable        # 'stable' o 'devel'
+confinement: strict  # Aislado del sistema (más seguro)
+base: core22         # Ubuntu 22.04 como base
+
+parts:
+  holamundo:
+    plugin: dump
+    source: build/libs
+    stage-packages:
+      - openjdk-17-jre   # Incluye JRE en el snap (usuario no necesita Java)
+
+apps:
+  holamundo:
+    command: usr/lib/jvm/java-17-openjdk-amd64/bin/java -jar holamundo-1.0.0.jar
+    plugs:
+      - network          # Permiso de red (por si acaso)
