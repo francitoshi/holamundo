@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ejemplo'
-version = '1.0.5'
+version = '1.0.4'
 
 // Gradle 9+: sourceCompatibility/targetCompatibility se eliminaron,
 // ahora van dentro del bloque java {}

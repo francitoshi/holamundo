@@ -40,7 +40,6 @@ jobs:
 
       - name: Crear instalador .deb (Debian/Ubuntu)
         run: |
-          # 1) jpackage genera el .deb sin post-install script
           jpackage \
             --type deb \
             --name holamundo \
@@ -51,30 +50,13 @@ jobs:
             --dest build/installers/linux \
             --description "Aplicación Hola Mundo en Java" \
             --vendor "Mi Empresa" \
-            --linux-shortcut
-
-          # 2) Inyectamos el post-install script manualmente:
-          #    - Desempaquetamos el .deb
-          #    - Añadimos el script postinst (ejecutado por dpkg tras instalar)
-          #    - Reempaquetamos
-          DEB=$(ls build/installers/linux/*.deb)
-          mkdir -p /tmp/deb-repack
-          dpkg-deb -R "$DEB" /tmp/deb-repack
-
-          cat > /tmp/deb-repack/DEBIAN/postinst << 'POSTINST'
-          #!/bin/sh
-          ln -sf /opt/holamundo/bin/holamundo /usr/bin/holamundo
-          POSTINST
-          chmod 0755 /tmp/deb-repack/DEBIAN/postinst
-
-          dpkg-deb -b /tmp/deb-repack "$DEB"
-          rm -rf /tmp/deb-repack
+            --linux-shortcut \
+            --linux-after-install packaging/linux/postinstall.sh
 
       - name: Crear instalador .rpm (RedHat/Fedora/CentOS)
         run: |
+          # rpm-build es necesario para generar .rpm en Ubuntu
           sudo apt-get install -y rpm
-
-          # 1) jpackage genera el .rpm base
           jpackage \
             --type rpm \
             --name holamundo \
@@ -84,42 +66,9 @@ jobs:
             --main-class com.ejemplo.holamundo.Main \
             --dest build/installers/linux \
             --description "Aplicación Hola Mundo en Java" \
-            --vendor "Mi Empresa"
+            --vendor "Mi Empresa" \
+            --linux-after-install packaging/linux/postinstall.sh
 
-          # 2) Desempaquetamos, añadimos el post-install script y reempaquetamos
-          #    El scriptlet %post se ejecuta por rpm/dnf tras instalar el paquete
-          RPM=$(ls build/installers/linux/*.rpm)
-          mkdir -p /tmp/rpm-repack
-          rpm2cpio "$RPM" | cpio -idmv -D /tmp/rpm-repack
-
-          # Creamos un spec mínimo para reempaquetar con el scriptlet %post
-          cat > /tmp/repack.spec << 'SPEC'
-          Name:    holamundo
-          Version: 1.0.0
-          Release: 1
-          Summary: Aplicación Hola Mundo en Java
-          License: Proprietary
-          BuildArch: x86_64
-
-          %description
-          Aplicación Hola Mundo en Java
-
-          %post
-          ln -sf /opt/holamundo/bin/holamundo /usr/bin/holamundo
-
-          %files
-          %defattr(-,root,root,-)
-          /opt/holamundo
-          SPEC
-
-          rpmbuild -bb /tmp/repack.spec \
-            --buildroot /tmp/rpm-repack \
-            --define "_rpmdir build/installers/linux" \
-            --define "_build_id_links none"
-          # Mover el rpm generado a la carpeta destino y limpiar
-          find build/installers/linux -name "*.rpm" -not -name "holamundo-1.0.0*.rpm" -delete || true
-          mv build/installers/linux/x86_64/*.rpm build/installers/linux/ 2>/dev/null || true
-          rm -rf /tmp/rpm-repack
       - name: Crear instalador .sh (script universal — cualquier Linux)
         run: |
           # Crea un script autocontenido que descomprime y ejecuta la app
@@ -193,6 +142,7 @@ jobs:
             --dest build/installers/mac \
             --description "Aplicación Hola Mundo en Java" \
             --vendor "Mi Empresa" \
+            --linux-after-install packaging/linux/postinstall.sh \
             --mac-package-name "Hola Mundo"
 
       - name: Crear instalador .pkg (paquete macOS — para distribución empresarial)
@@ -206,7 +156,8 @@ jobs:
             --main-class com.ejemplo.holamundo.Main \
             --dest build/installers/mac \
             --description "Aplicación Hola Mundo en Java" \
-            --vendor "Mi Empresa"
+            --vendor "Mi Empresa" \
+            --linux-after-install packaging/linux/postinstall.sh
 
       - name: Subir artefactos Mac
         uses: actions/upload-artifact@v4
