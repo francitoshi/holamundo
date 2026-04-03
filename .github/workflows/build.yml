@@ -206,9 +206,9 @@ jobs:
           jpackage ^
             --type exe ^
             --name holamundo ^
-            --app-version %VERSION% ^
+            --app-version 1.0.8 ^
             --input build\libs ^
-            --main-jar holamundo-%VERSION%.jar ^
+            --main-jar holamundo-1.0.8.jar ^
             --main-class com.ejemplo.holamundo.Main ^
             --dest build\installers\windows ^
             --description "Aplicación Hola Mundo en Java" ^
@@ -222,9 +222,9 @@ jobs:
           jpackage ^
             --type msi ^
             --name holamundo ^
-            --app-version %VERSION% ^
+            --app-version 1.0.8 ^
             --input build\libs ^
-            --main-jar holamundo-%VERSION%.jar ^
+            --main-jar holamundo-1.0.8.jar ^
             --main-class com.ejemplo.holamundo.Main ^
             --dest build\installers\windows ^
             --description "Aplicación Hola Mundo en Java" ^
