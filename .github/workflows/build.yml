@@ -182,6 +182,10 @@ jobs:
       - name: Clonar el repositorio
         uses: actions/checkout@v4
 
+      - name: Extraer versión del tag
+        # Elimina la 'v' inicial: v1.2.3 → 1.2.3
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
       - name: Instalar Java 17
         uses: actions/setup-java@v4
         with:
@@ -199,34 +203,34 @@ jobs:
 
       - name: Crear instalador .exe (ejecutable de instalación)
         run: |
-          jpackage `
-            --type exe `
-            --name holamundo `
-            --app-version ${{env.VERSION}} `
-            --input build\libs `
-            --main-jar holamundo-${{env.VERSION}}.jar `
-            --main-class com.ejemplo.holamundo.Main `
-            --dest build\installers\windows `
-            --description "Aplicación Hola Mundo en Java" `
-            --vendor "Mi Empresa" `
-            --win-shortcut `
-            --win-menu `
+          jpackage ^
+            --type exe ^
+            --name holamundo ^
+            --app-version %VERSION% ^
+            --input build\libs ^
+            --main-jar holamundo-%VERSION%.jar ^
+            --main-class com.ejemplo.holamundo.Main ^
+            --dest build\installers\windows ^
+            --description "Aplicación Hola Mundo en Java" ^
+            --vendor "Mi Empresa" ^
+            --win-shortcut ^
+            --win-menu ^
             --win-menu-group "Mi Empresa"
 
       - name: Crear instalador .msi (Windows Installer — para empresas/GPO)
         run: |
-          jpackage `
-            --type msi `
-            --name holamundo `
-            --app-version ${{env.VERSION}} `
-            --input build\libs `
-            --main-jar holamundo-${{env.VERSION}}.jar `
-            --main-class com.ejemplo.holamundo.Main `
-            --dest build\installers\windows `
-            --description "Aplicación Hola Mundo en Java" `
-            --vendor "Mi Empresa" `
-            --win-shortcut `
-            --win-menu `
+          jpackage ^
+            --type msi ^
+            --name holamundo ^
+            --app-version %VERSION% ^
+            --input build\libs ^
+            --main-jar holamundo-%VERSION%.jar ^
+            --main-class com.ejemplo.holamundo.Main ^
+            --dest build\installers\windows ^
+            --description "Aplicación Hola Mundo en Java" ^
+            --vendor "Mi Empresa" ^
+            --win-shortcut ^
+            --win-menu ^
             --win-menu-group "Mi Empresa"
 
       - name: Subir artefactos Windows
