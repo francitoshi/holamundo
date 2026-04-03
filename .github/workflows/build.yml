@@ -50,8 +50,7 @@ jobs:
             --dest build/installers/linux \
             --description "Aplicación Hola Mundo en Java" \
             --vendor "Mi Empresa" \
-            --linux-shortcut \
-            --linux-after-install packaging/linux/postinstall.sh
+            --linux-shortcut
 
       - name: Crear instalador .rpm (RedHat/Fedora/CentOS)
         run: |
@@ -66,8 +65,7 @@ jobs:
             --main-class com.ejemplo.holamundo.Main \
             --dest build/installers/linux \
             --description "Aplicación Hola Mundo en Java" \
-            --vendor "Mi Empresa" \
-            --linux-after-install packaging/linux/postinstall.sh
+            --vendor "Mi Empresa"
 
       - name: Crear instalador .sh (script universal — cualquier Linux)
         run: |
@@ -142,7 +140,6 @@ jobs:
             --dest build/installers/mac \
             --description "Aplicación Hola Mundo en Java" \
             --vendor "Mi Empresa" \
-            --linux-after-install packaging/linux/postinstall.sh \
             --mac-package-name "Hola Mundo"
 
       - name: Crear instalador .pkg (paquete macOS — para distribución empresarial)
@@ -156,8 +153,7 @@ jobs:
             --main-class com.ejemplo.holamundo.Main \
             --dest build/installers/mac \
             --description "Aplicación Hola Mundo en Java" \
-            --vendor "Mi Empresa" \
-            --linux-after-install packaging/linux/postinstall.sh
+            --vendor "Mi Empresa"
 
       - name: Subir artefactos Mac
         uses: actions/upload-artifact@v4
