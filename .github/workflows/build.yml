@@ -203,35 +203,11 @@ jobs:
 
       - name: Crear instalador .exe (ejecutable de instalación)
         run: |
-          jpackage ^
-            --type exe ^
-            --name holamundo ^
-            --app-version 1.0.8 ^
-            --input build\libs ^
-            --main-jar holamundo-1.0.8.jar ^
-            --main-class com.ejemplo.holamundo.Main ^
-            --dest build\installers\windows ^
-            --description "Aplicación Hola Mundo en Java" ^
-            --vendor "Mi Empresa" ^
-            --win-shortcut ^
-            --win-menu ^
-            --win-menu-group "Mi Empresa"
+          jpackage --type exe --name holamundo --app-version 1.0.9 --input build\libs --main-jar holamundo-1.0.9.jar --main-class com.ejemplo.holamundo.Main --dest build\installers\windows --description "Aplicación Hola Mundo en Java" --vendor "Mi Empresa" --win-shortcut --win-menu --win-menu-group "Mi Empresa"
 
       - name: Crear instalador .msi (Windows Installer — para empresas/GPO)
         run: |
-          jpackage ^
-            --type msi ^
-            --name holamundo ^
-            --app-version 1.0.8 ^
-            --input build\libs ^
-            --main-jar holamundo-1.0.8.jar ^
-            --main-class com.ejemplo.holamundo.Main ^
-            --dest build\installers\windows ^
-            --description "Aplicación Hola Mundo en Java" ^
-            --vendor "Mi Empresa" ^
-            --win-shortcut ^
-            --win-menu ^
-            --win-menu-group "Mi Empresa"
+          jpackage --type msi --name holamundo --app-version 1.0.9 --input build\libs --main-jar holamundo-1.0.9.jar --main-class com.ejemplo.holamundo.Main --dest build\installers\windows --description "Aplicación Hola Mundo en Java" --vendor "Mi Empresa" --win-shortcut --win-menu --win-menu-group "Mi Empresa"
 
       - name: Subir artefactos Windows
         uses: actions/upload-artifact@v4
